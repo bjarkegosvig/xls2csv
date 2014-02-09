@@ -4,24 +4,43 @@ import win32com.client
 from os import sys
 import os
 from datetime import datetime
+import time
 
-class excel2csv :
+class formatxls :
     """
     excel_file: is the file path to work on
     headerline_number: is the line number which the header starts on 
     del_columns: is the columns to delete must be a list
     """
-    def __init__(self, excel_file, headerline_number, del_columns):
+    #def __init__(self, excel_file, headerline_number, del_columns):
+    def __init__(self, excel_file, header_start_cell):
         self.filename       = excel_file
-        self.tmpfilename    = 'tmp.xls'
-        self.headerline     = headerline_number
-        self.del_columns    = del_columns
+        self.tmpfilename    = r'C:\Users\bjagos\Desktop\New folder\tmp.xls'
+        #self.headerline     = headerline_number
+        #self.del_columns    = del_columns
+        self.header_cell    = header_start_cell
+        self.headerline     = 0
+        self.del_columns    = ' '
         self.excel          = win32com.client .gencache.EnsureDispatch('Excel.Application')
         self.excel.Visible  = 0
         self.count          = 0
 
         #self.date_format   = "%Y%m%d"
 
+    def _find_header_pos(self):
+        length = len(self.header_cell)
+        
+        if length < 2:
+            return 1
+        
+        else :
+          
+            self.headerline = int(self.header_cell[1:])
+            self.del_columns = self.header_cell[0].upper() # uppercase
+            return 0
+
+        
+        
     def _open_workbook(self, file):
         try : 
             workbook=self.excel.Workbooks.Open(file) 
@@ -42,18 +61,38 @@ class excel2csv :
     
     def _del_title(self, workbook):
     # work on each sheet
-        for sheets in workbook.Sheets :
+        sheet_num = 0
+        for sheet in workbook.Sheets :
+            sheet.Select()
+            #keep only headerline in first sheet
+            sheet_num += 1
+            if sheet_num == 1:
+                offset = 1
+            else:
+                offset = 0
+            
             # delete title line and empty lines before header line
-            for n in range(self.headerline): 
-                print n
-                self.excel.Rows(n).Select() 
+            for n in range(0,self.headerline - offset ): 
+                self.excel.Rows(1).Select() #delete line 1 n times
                 self.excel.Selection.Delete() 
-    
+
+
     def _del_columns(self,workbook):
-        for sheets in workbook.Sheets :
-            for column_name in self.del_columns :
-                self.excel.Columns(column_name).Select() 
-                self.excel.Selection.Delete() 
+        
+        if self.del_columns == 'A':
+            return
+        else :
+            col = []
+            beginNum = ord('A')
+            endNum = ord(self.del_columns)
+            for number in xrange(beginNum, endNum):
+                 col.append( chr(number) )
+            for sheet in workbook.Sheets :
+                sheet.Select()
+                for column in col: 
+                   
+                    self.excel.Columns(column).Select() 
+                    self.excel.Selection.Delete() 
     
     def process_workbook(self):
         # copy the excelfile to a tmp file
@@ -61,6 +100,7 @@ class excel2csv :
         self._copy_workbook(workbook)
         self._close_workbook(workbook)
         # delete row and cols in the tmp file
+        self._find_header_pos()
         tmp_workbook = self._open_workbook(self.tmpfilename)
         self._del_title(tmp_workbook)
         self._del_columns(tmp_workbook)
@@ -69,8 +109,8 @@ class excel2csv :
              
 
         
-a = excel2csv(r'C:\Users\bjagos\Desktop\excel_test\new.xls',3,['A'])
-
+a = formatxls(r'C:\Users\bjagos\Desktop\New folder\new.xls','b4')
+a.process_workbook()
 
 
 
