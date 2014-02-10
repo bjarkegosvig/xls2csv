@@ -23,7 +23,7 @@ class csvwriter :
         all_worksheets = workbook.sheet_names()
         your_csv_file = open(self.csv_name, 'wb')
         wr = csv.writer(your_csv_file, dialect='excel', delimiter=';',  quoting=csv.QUOTE_NONE)
-
+        i = 1
         for worksheet_name in all_worksheets:
             worksheet = workbook.sheet_by_name(worksheet_name)
             for rownum in xrange(worksheet.nrows):
@@ -50,7 +50,9 @@ class csvwriter :
                     row.append(tmp.replace('\n','').replace(';','').replace('"',''))
                     
                 if any(row): # don't write empty rows
+
                     wr.writerow(row)
+
         your_csv_file.close()
         if your_csv_file.closed:
             return 0
