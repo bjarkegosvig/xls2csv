@@ -15,9 +15,8 @@ class formatxls :
     #def __init__(self, excel_file, headerline_number, del_columns):
     def __init__(self, excel_file, header_start_cell):
         self.filename       = excel_file
-        self.tmpfilename    = r'C:\Users\bjagos\Desktop\New folder\tmp.xls'
-        #self.headerline     = headerline_number
-        #self.del_columns    = del_columns
+        dir = os.path.realpath('.')
+        self.tmpfilename    = os.path.join(dir, 'tmp')   
         self.header_cell    = header_start_cell
         self.headerline     = 0
         self.del_columns    = ' '
@@ -102,15 +101,16 @@ class formatxls :
         # delete row and cols in the tmp file
         self._find_header_pos()
         tmp_workbook = self._open_workbook(self.tmpfilename)
-        self._del_title(tmp_workbook)
-        self._del_columns(tmp_workbook)
+        if self.header_cell != 'A1':
+            self._del_title(tmp_workbook)
+            self._del_columns(tmp_workbook)
         self._close_workbook(tmp_workbook)
-   
-             
+    
 
         
-a = formatxls(r'C:\Users\bjagos\Desktop\New folder\new.xls','b4')
-a.process_workbook()
+#a = formatxls(r'C:\Users\bjagos\Desktop\New folder\new.xls','b4')
+#a.print_me()
+#a.process_workbook()
 
 
 

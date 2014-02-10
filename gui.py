@@ -2,14 +2,15 @@
 # -*- encoding: utf-8 -*-
 
 import os
+import time
 import Tkinter as tk
 from tkFileDialog import askopenfilename
 import tkMessageBox
 from ttk import Frame, Style
 
 #custom imports
-#import csvwriter as cw
-#import formatxls as xls
+import csvwriter as cw
+import formatxls as xls
 
 
 
@@ -21,9 +22,10 @@ class gui(Frame):
         self.filevar = tk.StringVar()
         self.filevar.set("C:")
         self.radiovar = tk.StringVar()
-        self.radiovar = None
         self.entry = tk.Entry(self, bd = 5)
         self.entry.insert(0, "A1")
+        self.filename = "tmp"
+        self.headercell = "tmp"
         
         self._initUI()
         
@@ -47,6 +49,10 @@ class gui(Frame):
         L2 = tk.Label(self, text="Date format")
         R1 = tk.Radiobutton(self, text="dd/mm/yyyy", variable= self.radiovar, value="%d/%m/%Y")
         R2 = tk.Radiobutton(self, text="yyyymmdd", variable= self.radiovar, value="%Y%m%d")
+        #clear both radio buttons and select R1
+        R1.deselect()
+        R2.deselect()
+        R1.select()
     
         #button
         chooseBTN = tk.Button(self, text ="Choose file", command =  self.open_file, bg = 'white' )
@@ -73,13 +79,17 @@ class gui(Frame):
 
     def open_file(self):
         ret = 1
-        filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+        self.filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+        self.headercell = self.entry.get()
+        
+             
+        
         #ret = csv_from_excel(filename)
         #if ret == 0 :
         #    tkMessageBox.showinfo( "","Fil processeret")
         #else :
         #    tkMessageBox.showinfo( "","Fil fejlet")
-        self.filevar.set(filename)
+        self.filevar.set(self.filename)
 
 
     def close_top(self):
@@ -90,7 +100,13 @@ class gui(Frame):
         
         
     def _xls2csv(self):
-        print 'hej'
+        #manipulate xls file
+        excel = xls.formatxls(self.filename, self.headercell)
+        excel.process_workbook()
+        time.sleep(1)
+        #write to csv
+        csv_wr = cw.csvwriter(self.filename,str(self.radiovar.get()) )
+        csv_wr.xlsallsheet2onecsv()
         
 def main():
     root = tk.Tk()
