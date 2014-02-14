@@ -22,6 +22,7 @@ class gui(Frame):
         self.filevar = tk.StringVar()
         self.filevar.set("C:")
         self.radiovar = tk.StringVar()
+        self.encodingvar = tk.StringVar()
         self.entry = tk.Entry(self, bd = 5)
         self.entry.insert(0, "A1")
         self.filename = "tmp"
@@ -50,11 +51,19 @@ class gui(Frame):
         R1 = tk.Radiobutton(self, text="31/12/2099", variable= self.radiovar, value="%d/%m/%Y")
         R2 = tk.Radiobutton(self, text="20991231", variable= self.radiovar, value="%Y%m%d")
         R3 = tk.Radiobutton(self, text="31-Dec-2099", variable= self.radiovar, value="%d%b%Y")
+        
+        L4 = tk.Label(self, text="Encoding")
+        R4 = tk.Radiobutton(self, text="UTF-8 (Unicode)", variable= self.encodingvar, value="UTF-8")
+        R5 = tk.Radiobutton(self, text="cp1252 (Windows)", variable= self.encodingvar, value="cp1252")
         #clear all radio buttons and select R1
         R1.deselect()
         R2.deselect()
         R3.deselect()
+        R4.deselect()
+        R5.deselect()
+        
         R1.select()
+        R5.select()
     
         #button
         chooseBTN = tk.Button(self, text ="Choose file", command =  self.open_file, bg = 'white' )
@@ -69,6 +78,10 @@ class gui(Frame):
         R3.place(x = 0 , y = 100 )
         L1.place(x = 0 , y = 140 )
         self.entry.place(x = 100 , y = 140 )
+        
+        L4.place(x = 350 , y = 10 )
+        R4.place(x = 350 , y = 40 )
+        R5.place(x = 350 , y = 70 )
        
         chooseBTN.place(x=5 , y = 185)
         runBTN.place(x=5 , y = 230)
@@ -108,7 +121,7 @@ class gui(Frame):
         excel.process_workbook()
         time.sleep(1)
         #write to csv
-        csv_wr = cw.csvwriter(self.filename,str(self.radiovar.get()) )
+        csv_wr = cw.csvwriter(self.filename,str(self.radiovar.get()),str(self.encodingvar.get()) )
         csv_wr.xlsallsheet2onecsv()
         
 def main():

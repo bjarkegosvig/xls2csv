@@ -12,14 +12,14 @@ class csvwriter :
     """
     excel_file: is the file path to work on
     """
-    def __init__(self, excel_file, dateformat):
+    def __init__(self, excel_file, dateformat,encoding):
         dir = os.path.realpath('.')
         self.filename       = os.path.join(dir, 'tmp.xls')
         self.csv_name       = ''.join([excel_file[:-4],'.csv'])
         self.date_format    = dateformat
         #self.date_format    = "%d/%b/%Y"
         #self.date_format   = "%Y%m%d"
-        self.encoding = 'cp1252'
+        self.encoding = encoding
     
     def xlsallsheet2onecsv(self):
         
