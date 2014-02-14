@@ -7,6 +7,7 @@ import Tkinter as tk
 from tkFileDialog import askopenfilename
 import tkMessageBox
 from ttk import Frame, Style
+import tkMessageBox
 
 #custom imports
 import csvwriter as cw
@@ -32,7 +33,7 @@ class gui(Frame):
             # define options for opening or saving a file
         self.file_opt = options = {}
         options['defaultextension'] = '.txt'
-        options['filetypes'] = [('Excel files', '.xls;.xlsx'),('all files', '.*')]
+        options['filetypes'] = [('Excel files', '*.xls;*.xlsx'),('all files', '*.*')]
         options['initialdir'] = 'C:\\Desktop'
         options['parent'] = self.parent
         options['title'] = 'Choose file'
@@ -126,9 +127,9 @@ class gui(Frame):
         csv_wr = cw.csvwriter(self.filename,str(self.radiovar.get()),str(self.encodingvar.get()),self.cvar.get() )
         ret = csv_wr.xlsallsheet2onecsv()
         if ret == 0 :
-            tk.tkMessageBox.showinfo( "","File processed")
+            tkMessageBox.showinfo( "","File processed")
         else :
-            tk.tkMessageBox.showinfo( "","Error in file processing")
+            tkMessageBox.showinfo( "","Error in file processing")
         
 def main():
     root = tk.Tk()

@@ -19,9 +19,9 @@ class csvwriter :
         self.encoding    = encoding
         self.abformat    = abformat
         # test for xls or xlsx file
-        if excel_file[:-3]   == 'xls':
-            self.csv_name    = ''.join([excel_file[:-4],'.csv'])
-        elif excel_file[:-4] == 'xlsx': 
+        if 'xlsx' in excel_file:
+            self.csv_name    = ''.join([excel_file[:-5],'.csv'])
+        elif 'xls' in excel_file:
             self.csv_name    = ''.join([excel_file[:-4],'.csv'])
         else:
             self.csv_name    = ''.join([excel_file,'.csv'])
@@ -78,6 +78,3 @@ class csvwriter :
             return 0
         else :
             return 1 # file didn't close proper   
-            
-#a = csvwriter(r'C:\Users\bjagos\Desktop\New folder\new.xls',"dd/mm/Y")
-#a.xlsallsheet2onecsv()
