@@ -19,21 +19,21 @@ class formatxls :
         self.tmpfilename    = os.path.join(dir, 'tmp.xls')   
         self.header_cell    = header_start_cell
         self.headerline     = 0
-        self.del_columns    = ' '
+        self.del_columns    = 'A'
         self.excel          = win32com.client .gencache.EnsureDispatch('Excel.Application')
         self.excel.Visible  = 0
         self.count          = 0
 
     def _find_header_pos(self):
         length = len(self.header_cell)
-        
         if length < 2:
             return 1
-        
         else :
           
             self.headerline = int(self.header_cell[1:])
             self.del_columns = self.header_cell[0].upper() # uppercase
+            print self.headerline
+            print self.del_columns
             return 0
 
         
@@ -97,7 +97,8 @@ class formatxls :
         self._copy_workbook(workbook)
         self._close_workbook(workbook)
         # delete row and cols in the tmp file
-        self._find_header_pos()
+        a = self._find_header_pos()
+        print a
         tmp_workbook = self._open_workbook(self.tmpfilename)
         #if self.header_cell != 'A1':
         self._del_title(tmp_workbook)

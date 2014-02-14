@@ -27,6 +27,17 @@ class gui(Frame):
         self.entry.insert(0, "A1")
         self.filename = "tmp"
         self.headercell = "tmp"
+        self.cvar = tk.BooleanVar()
+        
+            # define options for opening or saving a file
+        self.file_opt = options = {}
+        options['defaultextension'] = '.txt'
+        options['filetypes'] = [('Excel files', '.xls;.xlsx'),('all files', '.*')]
+        options['initialdir'] = 'C:\\Desktop'
+        options['parent'] = self.parent
+        options['title'] = 'Choose file'
+        
+        
         
         self._initUI()
         
@@ -70,6 +81,9 @@ class gui(Frame):
         runBTN = tk.Button(self, text ="Run", command =  self._xls2csv, bg = 'white' )
         closeButton = tk.Button(self, text =" Close ", command = lambda self=self: self.close_top() , bg = 'white' )
         
+        #checkbox
+        C1 = tk.Checkbutton( self, text="Ascending numbers in Col A&B", variable=self.cvar,onvalue=True, offvalue=False)
+        
         
         L3.place(x = 100 , y = 190 )
         L2.place(x = 0 , y = 10 )
@@ -79,14 +93,15 @@ class gui(Frame):
         L1.place(x = 0 , y = 140 )
         self.entry.place(x = 100 , y = 140 )
         
-        L4.place(x = 350 , y = 10 )
-        R4.place(x = 350 , y = 40 )
-        R5.place(x = 350 , y = 70 )
+        L4.place(x = 200 , y = 10 )
+        R4.place(x = 200 , y = 40 )
+        R5.place(x = 200 , y = 70 )
+        C1.place(x = 200 , y = 100 ) 
        
         chooseBTN.place(x=5 , y = 185)
         runBTN.place(x=5 , y = 230)
         closeButton.place(x=440, y=240)
-
+        
 
     def sel(self):
         selection = "You selected the option " + str( self.radiovar.get())
@@ -95,16 +110,7 @@ class gui(Frame):
 
     def open_file(self):
         ret = 1
-        self.filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
-        self.headercell = self.entry.get()
-        
-             
-        
-        #ret = csv_from_excel(filename)
-        #if ret == 0 :
-        #    tkMessageBox.showinfo( "","Fil processeret")
-        #else :
-        #    tkMessageBox.showinfo( "","Fil fejlet")
+        self.filename = askopenfilename(**self.file_opt)     
         self.filevar.set(self.filename)
 
 
@@ -117,11 +123,12 @@ class gui(Frame):
         
     def _xls2csv(self):
         #manipulate xls file
+        self.headercell = self.entry.get()
         excel = xls.formatxls(self.filename, self.headercell)
         excel.process_workbook()
-        time.sleep(1)
+        time.sleep(0.5)
         #write to csv
-        csv_wr = cw.csvwriter(self.filename,str(self.radiovar.get()),str(self.encodingvar.get()) )
+        csv_wr = cw.csvwriter(self.filename,str(self.radiovar.get()),str(self.encodingvar.get()),self.cvar.get() )
         csv_wr.xlsallsheet2onecsv()
         
 def main():

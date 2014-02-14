@@ -12,7 +12,7 @@ class csvwriter :
     """
     excel_file: is the file path to work on
     """
-    def __init__(self, excel_file, dateformat,encoding):
+    def __init__(self, excel_file, dateformat,encoding,abformat):
         dir = os.path.realpath('.')
         self.filename       = os.path.join(dir, 'tmp.xls')
         self.csv_name       = ''.join([excel_file[:-4],'.csv'])
@@ -20,6 +20,7 @@ class csvwriter :
         #self.date_format    = "%d/%b/%Y"
         #self.date_format   = "%Y%m%d"
         self.encoding = encoding
+        self.abformat = abformat
     
     def xlsallsheet2onecsv(self):
         
@@ -54,16 +55,19 @@ class csvwriter :
                     row.append(tmp.replace('\n','').replace(';','').replace('"',''))
                     
                 if any(row): # don't write empty rows
-                    wr.writerow(row)
-                    #don't add number on headerline
-                    #if row_num == 0:
-                    #    wr.writerow(row)
-                    #    row_num = 1
-                    #else :
-                    #    row[0] = unicode(int(i)).encode(self.encoding)
-                    #    row[1] = unicode(int(i)).encode(self.encoding)               
-                    #    wr.writerow(row)
-                    #    i += 1
+                    # do we want column A and B to be filled with asending numbers from 1 to xxx
+                    if self.abformat :
+                        #don't add number on headerline
+                        if row_num == 0:
+                            wr.writerow(row)
+                            row_num = 1
+                        else :
+                            row[0] = unicode(int(i)).encode(self.encoding)
+                            row[1] = unicode(int(i)).encode(self.encoding)               
+                            wr.writerow(row)
+                            i += 1
+                    else:
+                        wr.writerow(row)
         your_csv_file.close()
         os.remove(self.filename)
         if your_csv_file.closed:
