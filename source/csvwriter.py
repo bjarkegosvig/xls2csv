@@ -14,14 +14,18 @@ class csvwriter :
     """
     def __init__(self, excel_file, dateformat,encoding,abformat):
         dir = os.path.realpath('.')
-        self.filename       = os.path.join(dir, 'tmp.xls')
-        self.csv_name       = ''.join([excel_file[:-4],'.csv'])
-        self.date_format    = dateformat
-        #self.date_format    = "%d/%b/%Y"
-        #self.date_format   = "%Y%m%d"
-        self.encoding = encoding
-        self.abformat = abformat
-    
+        self.filename    = os.path.join(dir, 'tmp.xls')        
+        self.date_format = dateformat
+        self.encoding    = encoding
+        self.abformat    = abformat
+        # test for xls or xlsx file
+        if excel_file[:-3]   == 'xls':
+            self.csv_name    = ''.join([excel_file[:-4],'.csv'])
+        elif excel_file[:-4] == 'xlsx': 
+            self.csv_name    = ''.join([excel_file[:-4],'.csv'])
+        else:
+            self.csv_name    = ''.join([excel_file,'.csv'])
+     
     def xlsallsheet2onecsv(self):
         
         workbook = xlrd.open_workbook(self.filename)

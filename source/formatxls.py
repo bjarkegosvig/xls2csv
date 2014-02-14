@@ -20,7 +20,7 @@ class formatxls :
         self.header_cell    = header_start_cell
         self.headerline     = 0
         self.del_columns    = 'A'
-        self.excel          = win32com.client .gencache.EnsureDispatch('Excel.Application')
+        self.excel          = win32com.client.gencache.EnsureDispatch('Excel.Application')
         self.excel.Visible  = 0
         self.count          = 0
 
@@ -32,8 +32,6 @@ class formatxls :
           
             self.headerline = int(self.header_cell[1:])
             self.del_columns = self.header_cell[0].upper() # uppercase
-            print self.headerline
-            print self.del_columns
             return 0
 
         
@@ -75,7 +73,6 @@ class formatxls :
 
 
     def _del_columns(self,workbook):
-        
         if self.del_columns == 'A':
             return
         else :
@@ -97,8 +94,7 @@ class formatxls :
         self._copy_workbook(workbook)
         self._close_workbook(workbook)
         # delete row and cols in the tmp file
-        a = self._find_header_pos()
-        print a
+        self._find_header_pos()
         tmp_workbook = self._open_workbook(self.tmpfilename)
         #if self.header_cell != 'A1':
         self._del_title(tmp_workbook)

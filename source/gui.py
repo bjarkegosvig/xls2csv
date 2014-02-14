@@ -25,8 +25,8 @@ class gui(Frame):
         self.encodingvar = tk.StringVar()
         self.entry = tk.Entry(self, bd = 5)
         self.entry.insert(0, "A1")
-        self.filename = "tmp"
-        self.headercell = "tmp"
+        self.filename = " "
+        self.headercell = "A1"
         self.cvar = tk.BooleanVar()
         
             # define options for opening or saving a file
@@ -103,11 +103,6 @@ class gui(Frame):
         closeButton.place(x=440, y=240)
         
 
-    def sel(self):
-        selection = "You selected the option " + str( self.radiovar.get())
-
-
-
     def open_file(self):
         ret = 1
         self.filename = askopenfilename(**self.file_opt)     
@@ -129,7 +124,11 @@ class gui(Frame):
         time.sleep(0.5)
         #write to csv
         csv_wr = cw.csvwriter(self.filename,str(self.radiovar.get()),str(self.encodingvar.get()),self.cvar.get() )
-        csv_wr.xlsallsheet2onecsv()
+        ret = csv_wr.xlsallsheet2onecsv()
+        if ret == 0 :
+            tk.tkMessageBox.showinfo( "","File processed")
+        else :
+            tk.tkMessageBox.showinfo( "","Error in file processing")
         
 def main():
     root = tk.Tk()
