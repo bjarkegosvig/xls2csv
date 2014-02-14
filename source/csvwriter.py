@@ -17,7 +17,7 @@ class csvwriter :
         self.filename       = os.path.join(dir, 'tmp.xls')
         self.csv_name       = ''.join([excel_file[:-4],'.csv'])
         self.date_format    = dateformat
-        #self.date_format    = "%d/%m/%Y"
+        #self.date_format    = "%d/%b/%Y"
         #self.date_format   = "%Y%m%d"
         self.encoding = 'cp1252'
     
@@ -28,6 +28,7 @@ class csvwriter :
         your_csv_file = open(self.csv_name, 'wb')
         wr = csv.writer(your_csv_file, dialect='excel', delimiter=';',  quoting=csv.QUOTE_NONE)
         i = 1
+        row_num = 0
         for worksheet_name in all_worksheets:
             worksheet = workbook.sheet_by_name(worksheet_name)
             for rownum in xrange(worksheet.nrows):
@@ -53,9 +54,16 @@ class csvwriter :
                     row.append(tmp.replace('\n','').replace(';','').replace('"',''))
                     
                 if any(row): # don't write empty rows
-
                     wr.writerow(row)
-
+                    #don't add number on headerline
+                    #if row_num == 0:
+                    #    wr.writerow(row)
+                    #    row_num = 1
+                    #else :
+                    #    row[0] = unicode(int(i)).encode(self.encoding)
+                    #    row[1] = unicode(int(i)).encode(self.encoding)               
+                    #    wr.writerow(row)
+                    #    i += 1
         your_csv_file.close()
         os.remove(self.filename)
         if your_csv_file.closed:

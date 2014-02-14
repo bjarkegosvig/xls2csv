@@ -16,15 +16,13 @@ class formatxls :
     def __init__(self, excel_file, header_start_cell):
         self.filename       = excel_file
         dir = os.path.realpath('.')
-        self.tmpfilename    = os.path.join(dir, 'tmp')   
+        self.tmpfilename    = os.path.join(dir, 'tmp.xls')   
         self.header_cell    = header_start_cell
         self.headerline     = 0
         self.del_columns    = ' '
         self.excel          = win32com.client .gencache.EnsureDispatch('Excel.Application')
         self.excel.Visible  = 0
         self.count          = 0
-
-        #self.date_format   = "%Y%m%d"
 
     def _find_header_pos(self):
         length = len(self.header_cell)
@@ -101,9 +99,9 @@ class formatxls :
         # delete row and cols in the tmp file
         self._find_header_pos()
         tmp_workbook = self._open_workbook(self.tmpfilename)
-        if self.header_cell != 'A1':
-            self._del_title(tmp_workbook)
-            self._del_columns(tmp_workbook)
+        #if self.header_cell != 'A1':
+        self._del_title(tmp_workbook)
+        self._del_columns(tmp_workbook)
         self._close_workbook(tmp_workbook)
     
 

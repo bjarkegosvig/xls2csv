@@ -47,11 +47,13 @@ class gui(Frame):
           
         # radio buttons
         L2 = tk.Label(self, text="Date format")
-        R1 = tk.Radiobutton(self, text="dd/mm/yyyy", variable= self.radiovar, value="%d/%m/%Y")
-        R2 = tk.Radiobutton(self, text="yyyymmdd", variable= self.radiovar, value="%Y%m%d")
-        #clear both radio buttons and select R1
+        R1 = tk.Radiobutton(self, text="31/12/2099", variable= self.radiovar, value="%d/%m/%Y")
+        R2 = tk.Radiobutton(self, text="20991231", variable= self.radiovar, value="%Y%m%d")
+        R3 = tk.Radiobutton(self, text="31-Dec-2099", variable= self.radiovar, value="%d%b%Y")
+        #clear all radio buttons and select R1
         R1.deselect()
         R2.deselect()
+        R3.deselect()
         R1.select()
     
         #button
@@ -60,15 +62,16 @@ class gui(Frame):
         closeButton = tk.Button(self, text =" Close ", command = lambda self=self: self.close_top() , bg = 'white' )
         
         
-        L3.place(x = 100 , y = 175 )
+        L3.place(x = 100 , y = 190 )
         L2.place(x = 0 , y = 10 )
         R1.place(x = 0 , y = 40 )
         R2.place(x = 0 , y = 70 )
-        L1.place(x = 0 , y = 110 )
-        self.entry.place(x = 100 , y = 110 )
+        R3.place(x = 0 , y = 100 )
+        L1.place(x = 0 , y = 140 )
+        self.entry.place(x = 100 , y = 140 )
        
-        chooseBTN.place(x=5 , y = 170)
-        runBTN.place(x=5 , y = 220)
+        chooseBTN.place(x=5 , y = 185)
+        runBTN.place(x=5 , y = 230)
         closeButton.place(x=440, y=240)
 
 
