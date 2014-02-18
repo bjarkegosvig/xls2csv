@@ -12,11 +12,12 @@ class formatxls :
     headerline_number: is the line number which the header starts on 
     del_columns: is the columns to delete must be a list
     """
-    def __init__(self, excel_file, header_start_cell):
+    def __init__(self, excel_file, header_start_cell = 'A1', one2one = 0):
         self.filename       = excel_file
         dir = os.path.realpath('.')
         self.tmpfilename    = os.path.join(dir, 'tmp.xls')   
         self.header_cell    = header_start_cell
+        self.one2one        = one2one
         self.headerline     = 0
         self.del_columns    = 'A'
         self.excel          = win32com.client.gencache.EnsureDispatch('Excel.Application')
@@ -57,11 +58,16 @@ class formatxls :
     # work on each sheet
         sheet_num = 0
         for sheet in workbook.Sheets :
-            sheet.Select()
-            #keep only headerline in first sheet
             sheet_num += 1
-            if sheet_num == 1:
+            sheet.Select()
+            # keep only headerline in first sheet except if we want one sheet to be one csv, 
+            # then we want header on all csv files.
+            # todo the last thing is if we only have header on the first sheet then there
+            # is no header line to delete
+            if sheet_num == 1 or self.one2one == 1 :
                 offset = 1
+            #elif sheet_num > 1 and oneheader == 1:
+            #    offset = 1
             else:
                 offset = 0
             
