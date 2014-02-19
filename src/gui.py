@@ -57,19 +57,24 @@ class gui(Frame):
         style.configure("TFrame")#, background="#333")  
         
         
+        ############################################################
+        # definitions of elements                                  #
+        ############################################################
+        
+        #labels
+        L1 = tk.Label(self, text="Date format")
+        L2 = tk.Label(self, text="Header cell")
         L3 = tk.Label(self, textvariable=self.filevar)
+        L4 = tk.Label(self, text="Encoding")
+        L5 = tk.Label(self, text="Other options")
         
         #entry
-        L1 = tk.Label(self, text="Header cell")
         entrybutton = tk.Button(self, text="Get", command= self.on_button)
           
         # radio buttons
-        L2 = tk.Label(self, text="Date format")
         R1 = tk.Radiobutton(self, text="31/12/2099", variable= self.radiovar, value="%d/%m/%Y")
         R2 = tk.Radiobutton(self, text="20991231", variable= self.radiovar, value="%Y%m%d")
-        R3 = tk.Radiobutton(self, text="31-Dec-2099", variable= self.radiovar, value="%d%b%Y")
-        
-        L4 = tk.Label(self, text="Encoding")
+        R3 = tk.Radiobutton(self, text="31-Dec-2099", variable= self.radiovar, value="%d%b%Y")    
         R4 = tk.Radiobutton(self, text="UTF-8 (Unicode)", variable= self.encodingvar, value="UTF-8")
         R5 = tk.Radiobutton(self, text="cp1252 (Windows)", variable= self.encodingvar, value="cp1252")
         #clear all radio buttons and select R1
@@ -83,9 +88,10 @@ class gui(Frame):
         R5.select()
     
         #button
-        chooseBTN = tk.Button(self, text ="Choose file", command =  self.open_file, bg = 'white' )
         runBTN = tk.Button(self, text ="Run", command =  self._xls2csv, bg = 'white' )
+        chooseBTN = tk.Button(self, text ="Choose file", command =  self.open_file, bg = 'white' )
         closeButton = tk.Button(self, text =" Close ", command = lambda self=self: self.close_top() , bg = 'white' )
+        
         
         #checkbox
         C1 = tk.Checkbutton( self, text="Only header in first sheet", variable=self.oneheader, onvalue=True, offvalue=False)
@@ -93,25 +99,37 @@ class gui(Frame):
         C3 = tk.Checkbutton( self, text="Ascending numbers in Col A&B", variable=self.abformat, onvalue=True, offvalue=False)
         
         
-        L3.place(x = 100 , y = 190 )
-        L2.place(x = 0 , y = 10 )
+        ############################################################
+        # placement of elements                                  #
+        ############################################################        
+        
+               
+        #left side
+        L1.place(x = 0 , y = 10 )
         R1.place(x = 0 , y = 40 )
         R2.place(x = 0 , y = 70 )
         R3.place(x = 0 , y = 100 )
-        L1.place(x = 0 , y = 140 )
+        L2.place(x = 0 , y = 140 )
         self.entry.place(x = 100 , y = 140 )
-
-        
-        L4.place(x = 200 , y = 10 )
-        R4.place(x = 200 , y = 40 )
-        R5.place(x = 200 , y = 70 )
-        C1.place(x = 200 , y = 100 ) 
-        C2.place(x = 200 , y = 130 )
-        C3.place(x = 200 , y = 160 )
         
         chooseBTN.place(x=5 , y = 185)
+        L3.place(x = 100 , y = 190 )
         runBTN.place(x=5 , y = 230)
-        closeButton.place(x=440, y=240)
+        
+        
+        
+        # Center
+        L4.place(x = 160 , y = 10 )
+        R4.place(x = 160 , y = 40 )
+        R5.place(x = 160 , y = 70 )
+        
+        # Right side
+        L5.place(x = 320 , y = 10 )
+        C1.place(x = 320 , y = 40 ) 
+        C2.place(x = 320 , y = 70 )
+        C3.place(x = 320 , y = 100 )
+    
+        closeButton.place(x=500, y=230)
         
 
     def open_file(self):
@@ -143,7 +161,7 @@ class gui(Frame):
         
 def main():
     root = tk.Tk()
-    root.geometry("500x280+300+300")
+    root.geometry("560x280+300+300")
     app = gui(root)
     root.mainloop()  
    
