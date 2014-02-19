@@ -8,16 +8,19 @@ import time
 
 class formatxls :
     """
-    excel_file: is the file path to work on
-    headerline_number: is the line number which the header starts on 
-    del_columns: is the columns to delete must be a list
+    excel_file:         string which contains the file path to work on
+    header_start_cell:  string which contains the cell where the headerline starts
+    one2one:            bool which indicates if each sheet must be one csv file
+    oneheader:          bool which indicates if there is only a headerline on the first 
+                        sheet and data starts in A1 for the rest of the sheets
     """
-    def __init__(self, excel_file, header_start_cell = 'A1', one2one = 0):
+    def __init__(self, excel_file, header_start_cell = 'A1', one2one = 0, oneheader = 0):
         self.filename       = excel_file
         dir = os.path.realpath('.')
         self.tmpfilename    = os.path.join(dir, 'tmp.xls')   
         self.header_cell    = header_start_cell
         self.one2one        = one2one
+        self.oneheader      = oneheader
         self.headerline     = 0
         self.del_columns    = 'A'
         self.excel          = win32com.client.gencache.EnsureDispatch('Excel.Application')
@@ -59,18 +62,20 @@ class formatxls :
         sheet_num = 0
         for sheet in workbook.Sheets :
             sheet_num += 1
-            sheet.Select()
+            
             # keep only headerline in first sheet except if we want one sheet to be one csv, 
             # then we want header on all csv files.
-            # todo the last thing is if we only have header on the first sheet then there
+            # the last thing is if we only have header on the first sheet then there
             # is no header line to delete
-            if sheet_num == 1 or self.one2one == 1 :
+            if sheet_num == 1 or self.one2one == 1:
                 offset = 1
-            #elif sheet_num > 1 and oneheader == 1:
-            #    offset = 1
+            elif sheet_num > 1 and self.oneheader == 1:
+                return
             else:
                 offset = 0
             
+            #select the current sheet to work on
+            sheet.Select()           
             # delete title line and empty lines before header line
             for n in range(0,self.headerline - offset ): 
                 self.excel.Rows(1).Select() #delete line 1 n times
@@ -78,18 +83,30 @@ class formatxls :
 
 
     def _del_columns(self,workbook):
+        
+        sheet_num = 0
         if self.del_columns == 'A':
             return
         else :
+            # find all columns to delete
             col = []
             beginNum = ord('A')
             endNum = ord(self.del_columns)
             for number in xrange(beginNum, endNum):
                  col.append( chr(number) )
+            
+            # work on each sheet
             for sheet in workbook.Sheets :
+                sheet_num += 1
+            
+                # don't delete anything after sheet 1 if we only have a header in sheet one
+                # and data starts in A1 for the rest of the sheets
+                if sheet_num >= 2 and self.oneheader == 1:
+                    return
+             
+                # select the current sheet to work on, and delete the necessary columns
                 sheet.Select()
-                for column in col: 
-                   
+                for column in col:  
                     self.excel.Columns(column).Select() 
                     self.excel.Selection.Delete() 
     

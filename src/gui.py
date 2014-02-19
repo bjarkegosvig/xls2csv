@@ -42,14 +42,14 @@ class gui(Frame):
         options['initialdir'] = desktop
         options['parent'] = self.parent
         options['title'] = 'Choose file'
-        
-        
-        
+            
         self._initUI()
         
         
     def _initUI(self):
-        
+        """
+        Setup the gui
+        """
         self.parent.title("xls2csv")
         self.pack(fill=tk.BOTH, expand=1)
         
@@ -88,9 +88,9 @@ class gui(Frame):
         closeButton = tk.Button(self, text =" Close ", command = lambda self=self: self.close_top() , bg = 'white' )
         
         #checkbox
-        C1 = tk.Checkbutton( self, text="Ascending numbers in Col A&B", variable=self.abformat, onvalue=True, offvalue=False)
-        C2 = tk.Checkbutton( self, text="Only header in first sheet", variable=self.oneheader, onvalue=True, offvalue=False)
-        C3 = tk.Checkbutton( self, text="One csv pr. one sheet", variable=self.one2one, onvalue=True, offvalue=False)
+        C1 = tk.Checkbutton( self, text="Only header in first sheet", variable=self.oneheader, onvalue=True, offvalue=False)
+        C2 = tk.Checkbutton( self, text="One csv pr. one sheet", variable=self.one2one, onvalue=True, offvalue=False)
+        C3 = tk.Checkbutton( self, text="Ascending numbers in Col A&B", variable=self.abformat, onvalue=True, offvalue=False)
         
         
         L3.place(x = 100 , y = 190 )
@@ -130,7 +130,7 @@ class gui(Frame):
     def _xls2csv(self):
         #manipulate xls file
         self.headercell = self.entry.get()
-        excel = xls.formatxls(self.filename, self.headercell, self.one2one.get())
+        excel = xls.formatxls(self.filename, self.headercell, self.one2one.get(),self.oneheader.get())
         excel.process_workbook()
         time.sleep(0.5)
         #write to csv

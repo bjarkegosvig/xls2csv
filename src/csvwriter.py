@@ -10,7 +10,11 @@ from datetime import datetime
 
 class csvwriter :
     """
-    excel_file: is the file path to work on
+    excel_file: string which contains the file path to work on
+    dateformat: string containing the dateformat e.g. "%d/%m/%Y"
+    encoding:   string containg the encoding format e.g. utf-8 or cp1252 etc.
+    one2one:    bool which indicates if each sheet must be one csv file
+
     """
     def __init__(self, excel_file, dateformat= "%d/%m/%Y", encoding = "cp1252", abformat = 0 , one2one = 0):
         dir = os.path.realpath('.')
@@ -75,8 +79,8 @@ class csvwriter :
                             i += 1
                     else:
                         wr.writerow(row)
-                # if we want one csv file pr sheet close current file and open a new one 
-                # but only if we havn't reached the last sheet
+            # if we want one csv file pr sheet close current file and open a new one 
+            # but only if we havn't reached the last sheet
             if self.one2one and (int(worksheet.number) != ( int(workbook.nsheets) - 1 )):
                 first = 0
                 your_csv_file.close()
