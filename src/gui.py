@@ -3,15 +3,19 @@
 
 import os
 import time
-import Tkinter as tk
-from tkFileDialog import askopenfilename
-import tkMessageBox
-from ttk import Frame, Style
-import tkMessageBox
+import tkinter as tk
+#from tkFileDialog import askopenfilename
+#import tkMessageBox
+#from ttk import Frame, Style
 from win32com.shell import shell, shellcon
 #custom imports
 import csvwriter as cw
 import formatxls as xls
+
+#renaming i python 3
+from tkinter.filedialog import askopenfilename as askopenfilename
+from tkinter import messagebox as tkMessageBox
+from tkinter.ttk import Frame, Style
 
 
 
@@ -69,7 +73,7 @@ class gui(Frame):
         L5 = tk.Label(self, text="Other options")
         
         #entry
-        entrybutton = tk.Button(self, text="Get", command= self.on_button)
+        #entrybutton = tk.Button(self, text="Get", command= self.on_button)
           
         # radio buttons
         R1 = tk.Radiobutton(self, text="31/12/2099", variable= self.radiovar, value="%d/%m/%Y")
@@ -139,11 +143,7 @@ class gui(Frame):
 
 
     def close_top(self):
-        self.parent.destroy()
-    
-    def on_button(self):
-        print self.entry.get()
-        
+        self.parent.destroy()    
         
     def _xls2csv(self):
         #manipulate xls file

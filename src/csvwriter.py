@@ -35,15 +35,15 @@ class csvwriter :
         
         workbook = xlrd.open_workbook(self.filename)
         all_worksheets = workbook.sheet_names()
-        your_csv_file = open(self.csv_name, 'wb')
-        wr = csv.writer(your_csv_file, dialect='excel', delimiter=';',  quoting=csv.QUOTE_NONE)
+        your_csv_file = open(self.csv_name, 'w', newline='', encoding = self.encoding  )
+        wr = csv.writer(your_csv_file, delimiter=';',  quoting=csv.QUOTE_NONE)
         i = 1
         n = 1
         row = []
         row_num = 0
         for worksheet_name in all_worksheets:
             worksheet = workbook.sheet_by_name(worksheet_name)
-            for rownum in xrange(worksheet.nrows):
+            for rownum in range(worksheet.nrows):
                 del row[:]
                 for entry in worksheet.row(rownum):
             
@@ -51,30 +51,33 @@ class csvwriter :
                     if entry.ctype == xlrd.XL_CELL_DATE:
                         a1_tuple = xlrd.xldate_as_tuple(entry.value , workbook.datemode)
                         a1_datetime = datetime(*a1_tuple)
-                        #tmp = unicode(a1_datetime.strftime(self.date_format)).encode(self.encoding)
                         tmp = a1_datetime.strftime(self.date_format)
-                    # encode integers
+                    # find integers
                     elif entry.ctype == xlrd.XL_CELL_NUMBER:
-                        if Decimal(entry.value)._isinteger():
-                            tmp = unicode(int(entry.value)).encode(self.encoding)
-                        # encode float
+                        if float(entry.value).is_integer():
+                            tmp = int(entry.value)
+                        # find float
                         else:
-                            tmp = unicode(entry.value).encode(self.encoding)
-                    # encode text
+                            tmp = float(entry.value)
+                    # the rest is text
                     else:
-                        tmp = unicode(entry.value).encode(self.encoding)
-                    row.append(tmp.replace('\n','').replace(';','').replace('"',''))
+                        
+                        tmp = entry.value
+                        tmp = tmp.replace('\n','').replace(';','').replace('"','')                     
+                    row.append(tmp)
+                   
+                    #row.append(tmp.replace('\n','').replace(';','').replace('"',''))
                     
                 if any(row): # don't write empty rows
-                    # do we want column A and B to be filled with asending numbers from 1 to xxx
+                   # do we want column A and B to be filled with asending numbers from 1 to xxx
                     if self.abformat :
                         #don't add number on headerline
                         if row_num == 0:
                             wr.writerow(row)
                             row_num = 1
                         else :
-                            row[0] = unicode(int(i)).encode(self.encoding)
-                            row[1] = unicode(int(i)).encode(self.encoding)               
+                            row[0] = int(i)
+                            row[1] = int(i)              
                             wr.writerow(row)
                             i += 1
                     else:

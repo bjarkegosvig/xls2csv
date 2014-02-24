@@ -45,7 +45,7 @@ class formatxls :
             self.count = workbook.Sheets.Count
             return workbook
         except:
-            print "Failed to open spreadsheet " + str(file)
+            print(( "Failed to open spreadsheet " + str(file) ))
             sys.exit(1)
     
     def _close_workbook(self,workbook):
@@ -92,7 +92,7 @@ class formatxls :
             col = []
             beginNum = ord('A')
             endNum = ord(self.del_columns)
-            for number in xrange(beginNum, endNum):
+            for number in range(beginNum, endNum):
                  col.append( chr(number) )
             
             # work on each sheet
