@@ -3,23 +3,23 @@
 
 import os
 import time
-import tkinter as tk
-#from tkFileDialog import askopenfilename
-#import tkMessageBox
-#from ttk import Frame, Style
+import Tkinter as tk
+from tkFileDialog import askopenfilename
+import tkMessageBox
+from ttk import Frame, Style, Combobox
 from win32com.shell import shell, shellcon
+import pythoncom
+
 #custom imports
 import csvwriter as cw
 import formatxls as xls
 
-#renaming i python 3
-from tkinter.filedialog import askopenfilename as askopenfilename
-from tkinter import messagebox as tkMessageBox
-from tkinter.ttk import Frame, Style, Combobox
-
-
-
-
+#imports if I go back to python3
+#import tkinter as tk
+#from tkinter.filedialog import askopenfilename as askopenfilename
+#from tkinter import messagebox as tkMessageBox
+#from tkinter.ttk import Frame, Style, Combobox
+# remember if baack to python3 change xrange to range 
 
 class gui(Frame):
     def __init__(self,parent):
@@ -165,17 +165,33 @@ class gui(Frame):
         
         #manipulate xls file
         self.headercell = self.entry.get()
-        excel = xls.formatxls(self.filename, self.headercell, self.one2one.get(),self.oneheader.get())
-        excel.process_workbook()
-        #write to csv
+        try:
+            excel = xls.formatxls(self.filename, self.headercell, self.one2one.get(),self.oneheader.get())
+            excel.process_workbook()
+        except pythoncom.com_error as excelerror: #, (hr, msg, exc, arg):
+            hr,msg,exc,arg = excelerror.args
+            err_msg =  "The Excel call failed with code %d: %s" % (hr, msg)
+            err_msg += '\n'
+            if exc is None:
+                err_msg += "There is no extended error information"
+            else:
+                    wcode, source, text, helpFile, helpId, scode = exc
+                    err_msg += "The source of the error is", source
+                    err_msg += '\n'
+                    err_msg += "The error message is", text
+                    err_msg += '\n'
+                    err_msg += "More info can be found in %s (id=%d)" % (helpFile, helpId)
+            tkMessageBox.showinfo( "",err_msg)
+      
+      #write to csv
         csv_wr = cw.csvwriter(self.filename, str(self.radiovar.get()),
                               str(self.encodingvar.get()), self.abformat.get(), 
                               self.one2one.get(), delimiter )
         ret = csv_wr.xlsallsheet2onecsv()
         if ret == 0 :
-            tkMessageBox.showinfo( "","File processed")
+            tkMessageBox.showinfo( "","CSV file Written")
         else :
-            tkMessageBox.showinfo( "","Error in file processing")
+            tkMessageBox.showinfo( "","Error writing csv file")
         
 def main():
     root = tk.Tk()

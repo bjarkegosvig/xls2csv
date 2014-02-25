@@ -1,6 +1,7 @@
 from cx_Freeze import setup, Executable
 # run as python cx_build build
-includefiles = ['..\UNLICENSE.txt', '..\README.md']
+
+includefiles = [r'..\UNLICENSE.txt', r'..\README.md']
 includes = ['csvwriter','formatxls']
 excludes = []
 packages = ['win32com.gen_py']
@@ -19,7 +20,7 @@ exe = Executable(
      )
 
 setup( name = "xls2csv",
-           version = "0.11",
+           version = "0.15",
            description = "Convert xls file to csv",
           options = {'build_exe': {'excludes':excludes,'packages':packages,'includes':includes,'include_files':includefiles}},
            executables = [exe]

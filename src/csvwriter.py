@@ -39,7 +39,8 @@ class csvwriter :
         
         workbook = xlrd.open_workbook(self.filename)
         all_worksheets = workbook.sheet_names()
-        your_csv_file = open(self.csv_name, 'w', newline='', encoding = self.encoding  )
+        #your_csv_file = open(self.csv_name, 'w', newline='', encoding = self.encoding  ) python3 version
+        your_csv_file = open(self.csv_name, 'wb', )
         wr = csv.writer(your_csv_file, delimiter=self.delimeter,  quoting=csv.QUOTE_NONE)
         i = 1
         n = 1
@@ -47,7 +48,7 @@ class csvwriter :
         row_num = 0
         for worksheet_name in all_worksheets:
             worksheet = workbook.sheet_by_name(worksheet_name)
-            for rownum in range(worksheet.nrows):
+            for rownum in xrange(worksheet.nrows):
                 del row[:]
                 for entry in worksheet.row(rownum):
             
@@ -67,7 +68,8 @@ class csvwriter :
                     else:
                         
                         tmp = entry.value
-                        tmp = tmp.replace('\n','').replace(self.delimeter,'').replace('"','')                     
+                        tmp = tmp.replace('\n','').replace(self.delimeter,'').replace('"','') 
+                    tmp = unicode(tmp).encode(self.encoding) #only for python2
                     row.append(tmp)
                    
                     #row.append(tmp.replace('\n','').replace(';','').replace('"',''))
@@ -96,7 +98,8 @@ class csvwriter :
                     first == 1
                 else:
                     self.csv_name    = ''.join([self.csv_name[:-6],'_' ,str(n) ,'.csv'])
-                your_csv_file = open(self.csv_name, 'w', newline='', encoding = self.encoding  )
+                #your_csv_file = open(self.csv_name, 'w', newline='', encoding = self.encoding  )
+                your_csv_file = open(self.csv_name, 'wb')
                 wr = csv.writer(your_csv_file, delimiter=self.delimeter, quoting=csv.QUOTE_NONE)
                 n += 1
                     

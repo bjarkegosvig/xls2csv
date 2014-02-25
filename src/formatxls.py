@@ -5,6 +5,7 @@ from os import sys
 import os
 from datetime import datetime
 import time
+import pythoncom
 
 class formatxls :
     """
@@ -25,6 +26,7 @@ class formatxls :
         self.del_columns    = 'A'
         self.excel          = win32com.client.gencache.EnsureDispatch('Excel.Application')
         self.excel.Visible  = 0
+        self.excel.DisplayAlerts = False
         self.count          = 0
 
     def _find_header_pos(self):
@@ -41,17 +43,22 @@ class formatxls :
         
     def _open_workbook(self, file):
         try : 
-            workbook=self.excel.Workbooks.Open(file) 
+            workbook=self.excel.Workbooks.Open(file,ReadOnly=0) 
             self.count = workbook.Sheets.Count
             return workbook
-        except:
-            print(( "Failed to open spreadsheet " + str(file) ))
-            sys.exit(1)
+        except pythoncom.com_error as e:
+        #except as e:
+            #re raise exception
+            raise e        
+        
+        #except:
+            #print(( "Failed to open spreadsheet " + str(file) ))
+            #sys.exit(1)
     
     def _close_workbook(self,workbook):
         workbook.Save()
         workbook.Close(SaveChanges=True) 
-        self.excel.Application.Quit()
+
     
     def _copy_workbook(self,workbook):
         workbook.SaveAs(self.tmpfilename)
@@ -77,7 +84,7 @@ class formatxls :
             #select the current sheet to work on
             sheet.Select()           
             # delete title line and empty lines before header line
-            for n in range(0,self.headerline - offset ): 
+            for n in xrange(0,self.headerline - offset ): 
                 self.excel.Rows(1).Select() #delete line 1 n times
                 self.excel.Selection.Delete() 
 
@@ -111,14 +118,22 @@ class formatxls :
                     self.excel.Selection.Delete() 
     
     def process_workbook(self):
+        try:
         # copy the excelfile to a tmp file
-        workbook = self._open_workbook(self.filename)
-        self._copy_workbook(workbook)
-        self._close_workbook(workbook)
-        # delete row and cols in the tmp file
-        self._find_header_pos()
-        tmp_workbook = self._open_workbook(self.tmpfilename)
-        self._del_title(tmp_workbook)
-        self._del_columns(tmp_workbook)
-        self._close_workbook(tmp_workbook)
+            workbook = self._open_workbook(self.filename)
+            self._copy_workbook(workbook)
+            self._close_workbook(workbook)
+            # delete row and cols in the tmp file
+            self._find_header_pos()
+            tmp_workbook = self._open_workbook(self.tmpfilename)
+            self._del_title(tmp_workbook)
+            self._del_columns(tmp_workbook)
+            self._close_workbook(tmp_workbook)
+            #cleanup
+            self.excel.Application.Quit()            
+            del self.excel 
+    
+        except pythoncom.com_error as e:
+            #re raise exception
+            raise e        
  
