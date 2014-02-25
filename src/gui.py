@@ -15,7 +15,7 @@ import formatxls as xls
 #renaming i python 3
 from tkinter.filedialog import askopenfilename as askopenfilename
 from tkinter import messagebox as tkMessageBox
-from tkinter.ttk import Frame, Style
+from tkinter.ttk import Frame, Style, Combobox
 
 
 
@@ -29,7 +29,7 @@ class gui(Frame):
         self.filevar        = tk.StringVar()
         self.radiovar       = tk.StringVar()
         self.encodingvar    = tk.StringVar()
-        self.entry          = tk.Entry(self, bd = 5, width=5)
+        self.entry          = tk.Entry(self, bd = 5, width=4)
         self.filename       = " "
         self.headercell     = "A1"
         self.abformat       = tk.BooleanVar()
@@ -71,6 +71,7 @@ class gui(Frame):
         L3 = tk.Label(self, textvariable=self.filevar)
         L4 = tk.Label(self, text="Encoding")
         L5 = tk.Label(self, text="Other options")
+        L6 = tk.Label(self, text="Delimeter")
         
         #entry
         #entrybutton = tk.Button(self, text="Get", command= self.on_button)
@@ -103,6 +104,14 @@ class gui(Frame):
         C3 = tk.Checkbutton( self, text="Ascending numbers in Col A&B", variable=self.abformat, onvalue=True, offvalue=False)
         
         
+        #combobox
+        self.box_value = tk.StringVar()
+        self.box = Combobox(self.parent, textvariable=self.box_value, state='readonly', width = 4)
+        self.box['values'] = (';', ',', 'TAB')
+        self.box.current(0)
+        #value= box['values'][0]
+        
+        
         ############################################################
         # placement of elements                                  #
         ############################################################        
@@ -126,6 +135,8 @@ class gui(Frame):
         L4.place(x = 160 , y = 10 )
         R4.place(x = 160 , y = 40 )
         R5.place(x = 160 , y = 70 )
+        L6.place(x = 160 , y = 140 )
+        self.box.place(x = 240 , y = 140 )
         
         # Right side
         L5.place(x = 320 , y = 10 )
@@ -146,13 +157,20 @@ class gui(Frame):
         self.parent.destroy()    
         
     def _xls2csv(self):
+        # get delimiter
+        if self.box_value.get() == 'TAB':
+            delimiter = '\t'
+        else:
+            delimiter = self.box_value.get()
+        
         #manipulate xls file
         self.headercell = self.entry.get()
         excel = xls.formatxls(self.filename, self.headercell, self.one2one.get(),self.oneheader.get())
         excel.process_workbook()
-        time.sleep(0.5)
         #write to csv
-        csv_wr = cw.csvwriter(self.filename,str(self.radiovar.get()),str(self.encodingvar.get()),self.abformat.get(), self.one2one.get() )
+        csv_wr = cw.csvwriter(self.filename, str(self.radiovar.get()),
+                              str(self.encodingvar.get()), self.abformat.get(), 
+                              self.one2one.get(), delimiter )
         ret = csv_wr.xlsallsheet2onecsv()
         if ret == 0 :
             tkMessageBox.showinfo( "","File processed")

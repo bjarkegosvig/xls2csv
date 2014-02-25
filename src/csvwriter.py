@@ -13,16 +13,20 @@ class csvwriter :
     excel_file: string which contains the file path to work on
     dateformat: string containing the dateformat e.g. "%d/%m/%Y"
     encoding:   string containg the encoding format e.g. utf-8 or cp1252 etc.
+    abformat:   bool which indicates if row 0 or 1 should be filled with an asending number    
     one2one:    bool which indicates if each sheet must be one csv file
+    delimiter:  string containg the delimiter e.g. ';' or ',' or '\t' (tab)    
 
     """
-    def __init__(self, excel_file, dateformat= "%d/%m/%Y", encoding = "cp1252", abformat = 0 , one2one = 0):
+    def __init__(self, excel_file, dateformat= "%d/%m/%Y", encoding = "cp1252", 
+                 abformat = 0 , one2one = 0, delimiter = ';'):
         dir = os.path.realpath('.')
         self.filename    = os.path.join(dir, 'tmp.xls')        
         self.date_format = dateformat
         self.encoding    = encoding
         self.abformat    = abformat
         self.one2one     = one2one
+        self.delimeter   = delimiter
         # test for xls or xlsx file
         if 'xlsx' in excel_file:
             self.csv_name    = ''.join([excel_file[:-5],'.csv'])
@@ -36,7 +40,7 @@ class csvwriter :
         workbook = xlrd.open_workbook(self.filename)
         all_worksheets = workbook.sheet_names()
         your_csv_file = open(self.csv_name, 'w', newline='', encoding = self.encoding  )
-        wr = csv.writer(your_csv_file, delimiter=';',  quoting=csv.QUOTE_NONE)
+        wr = csv.writer(your_csv_file, delimiter=self.delimeter,  quoting=csv.QUOTE_NONE)
         i = 1
         n = 1
         row = []
@@ -56,14 +60,14 @@ class csvwriter :
                     elif entry.ctype == xlrd.XL_CELL_NUMBER:
                         if float(entry.value).is_integer():
                             tmp = int(entry.value)
-                        # find float
                         else:
-                            tmp = float(entry.value)
+                            # float with two decimals
+                            tmp = "{0:.2f}".format(float(entry.value))
                     # the rest is text
                     else:
                         
                         tmp = entry.value
-                        tmp = tmp.replace('\n','').replace(';','').replace('"','')                     
+                        tmp = tmp.replace('\n','').replace(self.delimeter,'').replace('"','')                     
                     row.append(tmp)
                    
                     #row.append(tmp.replace('\n','').replace(';','').replace('"',''))
@@ -92,8 +96,8 @@ class csvwriter :
                     first == 1
                 else:
                     self.csv_name    = ''.join([self.csv_name[:-6],'_' ,str(n) ,'.csv'])
-                your_csv_file = open(self.csv_name, 'wb')
-                wr = csv.writer(your_csv_file, dialect='excel', delimiter=';',  quoting=csv.QUOTE_NONE)
+                your_csv_file = open(self.csv_name, 'w', newline='', encoding = self.encoding  )
+                wr = csv.writer(your_csv_file, delimiter=self.delimeter, quoting=csv.QUOTE_NONE)
                 n += 1
                     
         your_csv_file.close()
