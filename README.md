@@ -15,6 +15,7 @@ A screenshot of the interface.
 ![Screenshot](pics/scr.jpg "Screenshot")
 
 If a csv file has been written the following picture will be shown. If it does not appear something has gone wrong but the error will not be shown at the moment.
+
 ![sucess](pics/sucess.jpg "sucess")
 
  
@@ -36,15 +37,15 @@ Choose this if you want one csv file for each sheet you have. It is assumed that
 ### Acending number i Col A&B
 Choose this if you want asending number in column A and B starting with the number 1. It will looks like this.
 
-| A | B | C ....
-----------------
-| 1 | 1 |
-| 2 | 2 | 
-| 3 | 3 |
-| 4 | 4 |
-  .   .
-  .   .
-  .   .
+| A | B | C ....|
+|---|---|-------|
+| 1 | 1 |	     |
+| 2 | 2 | 	     |
+| 3 | 3 |       |
+| 4 | 4 |       |
+| . | . |       |
+| . | . |       |
+| . | . |       |
 
 ## Header cell
 
